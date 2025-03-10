@@ -2,6 +2,8 @@ import 'package:flight_booking/mvc/model/flight_search_response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import 'FlightDetailPage.dart';
+
 class FlightListPage extends StatefulWidget {
   final SearchResponse flightData;
 
@@ -18,119 +20,125 @@ class _FlightListPageState extends State<FlightListPage> {
       appBar: AppBar(
         title: Text('Flight List'),
       ),
-      body: ListView.builder(
-          itemCount: widget.flightData.data.length,
-          itemBuilder: (context, index) {
-            final flight = widget.flightData.data[index];
-
-            return FlightCard(flight: flight);
-          }),
+      body:  SingleChildScrollView(
+        padding: EdgeInsets.all(16.0),
+        child: FlightCard(flight: widget.flightData.data),
+      ),
     );
   }
 }
 
 class FlightCard extends StatelessWidget {
-  final Datum flight;
+  final List<Datum> flight;
 
   const FlightCard({Key? key, required this.flight}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 4.0,
-      child: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    '${flight.itineraries.first.segments.first.carrierCode}',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return Column(
+      children: flight.map((flight) {
+        return GestureDetector(
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FlightDetailPage(flight:flight),
+              ),
+            );
+          },
+          child: Card(
+            elevation: 4.0,
+            margin: EdgeInsets.only(bottom: 16.0),
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Display carrier code and price per itinerary
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        flight.itineraries.first.segments.first.carrierCode,
+                        style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        'Price: ${flight.price.total} ${flight.price.currency}',
+                        style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                    ],
                   ),
-                ),
-                Text(
-                  'Price: ${flight.price.total} ${flight.price.currency}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(width: 8),
-              ],
+                  SizedBox(height: 8),
+
+                  Column(
+                    children: flight.itineraries.map((itinerary) {
+                      return Column(
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    '${itinerary.segments.first.departure.at.hour}:${itinerary.segments.first.departure.at.minute.toString().padLeft(2, '0')}',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    itinerary.segments.first.departure.iataCode,
+                                    style:
+                                    TextStyle(fontSize: 14, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                children: [
+                                  Icon(
+                                    Icons.airplane_ticket,
+                                    size: 32,
+                                    color: Colors.blue,
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    '${itinerary.segments.length - 1} Stops',
+                                    style: TextStyle(
+                                        fontSize: 14, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    '${itinerary.segments.last.arrival.at.hour}:${itinerary.segments.last.arrival.at.minute.toString().padLeft(2, '0')}',
+                                    style: TextStyle(
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.bold),
+                                  ),
+                                  Text(
+                                    itinerary.segments.last.arrival.iataCode,
+                                    style:
+                                    TextStyle(fontSize: 14, color: Colors.grey),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                        ],
+                      );
+                    }).toList(),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 20),
-            Row(
-              children: [
-                Icon(Icons.swap_horiz),
-                SizedBox(width: 8),
-                Text(
-                  '${flight.itineraries.first.duration} ${flight.itineraries
-                      .first.segments.first.numberOfStops} Stops',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${flight.itineraries.first.segments.first.departure.at
-                          .hour}:${flight.itineraries.first.segments.first
-                          .departure.at.minute.toString().padLeft(2, '0')}',
-                      style: TextStyle(
-                          fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      flight.itineraries.first.segments.first.departure
-                          .iataCode, // Departure airport code
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ],
-                ),
-
-                Column(
-                  children: [
-                    Icon(
-                      Icons.airplane_ticket,
-                      size: 32,
-                      color: Colors.blue,
-                    ),
-                    Text(
-                      '${flight.itineraries.first.segments.length - 1} Stops',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    )
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    Text(
-                      '${flight.itineraries.first.segments.first.arrival.at
-                          .hour}:${flight.itineraries.first.segments.first.arrival
-                          .at.minute.toString().padLeft(2, '0')}',
-                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      flight.itineraries.first.segments.first.arrival.iataCode, // Arrival airport code
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ],
-                ),
-                // Centered icon
-
-
-                // Right-aligned arrival time
-
-              ],
-            ),
-
-          ],
-        ),
-      ),
+          ),
+        );
+      }).toList(),
     );
   }
 }

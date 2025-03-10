@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flight_booking/mvc/view/flight_list_page.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -30,7 +29,7 @@ class ApiController {
             'departureDate': date,
             'returnDate': returndate,
             'adults': passengers.toString(),
-            'max': '3',
+            'max': '5',
           },
         );
         final data = jsonDecode(tokenResponse.body);

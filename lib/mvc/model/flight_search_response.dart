@@ -202,7 +202,7 @@ class Arrival {
 
   factory Arrival.fromJson(Map<String, dynamic> json) => Arrival(
     iataCode: json["iataCode"],
-    terminal: json["terminal"],
+    terminal: json["terminal"]?? "",
     at: DateTime.parse(json["at"]),
   );
 
