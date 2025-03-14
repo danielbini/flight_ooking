@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flight_booking/mvc/controller/Services/TokenService.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,9 +18,13 @@ class ApiController {
       final tokenResponse = await http.post(
         Uri.parse(endpoint),
         headers: {'Content-Type': 'application/json'},
-      );
+      ).timeout(Duration(seconds: 100));
 
       if (tokenResponse.statusCode == 200) {
+        final tokenData=jsonDecode(tokenResponse.body);
+        String accessToken = tokenData['accessToken'];
+
+        TokenService().setToken(accessToken);
         final Uri uri = Uri.parse(
                 'https://travelapi.test.tobiyamarketplace.com/api/shopping/flight-offers')
             .replace(
@@ -33,7 +38,6 @@ class ApiController {
           },
         );
         final data = jsonDecode(tokenResponse.body);
-        String accessToken = data['accessToken'];
         final response = await http.get(
           uri,
           headers: {

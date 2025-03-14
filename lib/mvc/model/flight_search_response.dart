@@ -209,7 +209,7 @@ class Arrival {
   Map<String, dynamic> toJson() => {
     "iataCode": iataCode,
     "terminal": terminal,
-    "at": at.toIso8601String(),
+    "at": at.toIso8601String().split(".")[0],
   };
 }
 
@@ -416,7 +416,7 @@ class TravelerPricingPrice {
 }
 
 class Dictionaries {
-  Locations locations;
+  String locations;
   DictionariesAircraft aircraft;
   Currencies currencies;
   Carriers carriers;
@@ -429,14 +429,14 @@ class Dictionaries {
   });
 
   factory Dictionaries.fromJson(Map<String, dynamic> json) => Dictionaries(
-    locations: Locations.fromJson(json["locations"]),
+    locations: json["locations"],
     aircraft: DictionariesAircraft.fromJson(json["aircraft"]),
     currencies: Currencies.fromJson(json["currencies"]),
     carriers: Carriers.fromJson(json["carriers"]),
   );
 
   Map<String, dynamic> toJson() => {
-    "locations": locations.toJson(),
+    "locations": locations,
     "aircraft": aircraft.toJson(),
     "currencies": currencies.toJson(),
     "carriers": carriers.toJson(),
@@ -495,49 +495,9 @@ class Currencies {
   };
 }
 
-class Locations {
-  Add add;
-  Add nbo;
-  Add dxb;
 
-  Locations({
-    required this.add,
-    required this.nbo,
-    required this.dxb,
-  });
 
-  factory Locations.fromJson(Map<String, dynamic> json) => Locations(
-    add: Add.fromJson(json["ADD"]),
-    nbo: Add.fromJson(json["NBO"]),
-    dxb: Add.fromJson(json["DXB"]),
-  );
 
-  Map<String, dynamic> toJson() => {
-    "ADD": add.toJson(),
-    "NBO": nbo.toJson(),
-    "DXB": dxb.toJson(),
-  };
-}
-
-class Add {
-  String cityCode;
-  String countryCode;
-
-  Add({
-    required this.cityCode,
-    required this.countryCode,
-  });
-
-  factory Add.fromJson(Map<String, dynamic> json) => Add(
-    cityCode: json["cityCode"],
-    countryCode: json["countryCode"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "cityCode": cityCode,
-    "countryCode": countryCode,
-  };
-}
 
 class Meta {
   int count;

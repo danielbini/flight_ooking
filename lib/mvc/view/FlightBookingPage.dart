@@ -216,6 +216,20 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                         style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ),
+            BottomNavigationBar(      type: BottomNavigationBarType.fixed, // Ensure all 4 tabs show
+                selectedItemColor: Colors.blue,
+                unselectedItemColor: Colors.grey,
+                showUnselectedLabels: true,
+                items: [
+              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Booking'),
+              BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
+              BottomNavigationBarItem(icon: Icon(Icons.login), label: 'Profile'),
+            ],
+            onTap: (index){
+
+            },),
+
           ],
         ),
       ),
