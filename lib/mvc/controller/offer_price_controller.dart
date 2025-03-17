@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import '../model/Request/flight_offer_price_request.dart';
 import '../model/Response/flight_offer_response.dart';
-import '../model/flight_search_response.dart';
+import '../model/Response/flight_search_response.dart';
 import 'package:http/http.dart' as http;
 
 import 'Services/TokenService.dart';
@@ -22,8 +22,7 @@ class ApiOfferController {
         flightOffers: [flight],
       ),
     );
-    String requestBody = jsonEncode(flightOfferRQ.toJson());
-    print("Request JSON: $requestBody");
+
     try {
       final response = await http.post(
         Uri.parse(endpoint),

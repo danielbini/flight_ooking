@@ -1,4 +1,4 @@
-import '../flight_search_response.dart';
+import '../Response/flight_offer_response.dart';
 
 class OrderCreateRQ {
   OrderCreateData? data;
@@ -20,7 +20,7 @@ class OrderCreateRQ {
 
 class OrderCreateData {
   String? type;
-  List<Datum>? flightOffers;
+  List<FlightOffers>? flightOffers;
   List<Travelers>? travelers;
   Remarks? remarks;
   TicketingAgreement? ticketingAgreement;
@@ -31,7 +31,7 @@ class OrderCreateData {
   OrderCreateData.fromJson(Map<String, dynamic> json) {
     type = json['type'];
     if (json['flightOffers'] != null) {
-      flightOffers = List<Datum>.from(json['flightOffers'].map((x) => Datum.fromJson(x)));
+      flightOffers = List<FlightOffers>.from(json['flightOffers'].map((x) => FlightOffers.fromJson(x)));
 
     }
     if (json['travelers'] != null) {
@@ -68,77 +68,7 @@ class OrderCreateData {
   }
 }
 
-class FlightOffers {
-  String? type;
-  String? id;
-  String? source;
-  bool? instantTicketingRequired;
-  bool? nonHomogeneous;
-  bool? oneWay;
-  bool? isUpsellOffer;
-  String? lastTicketingDate;
-  String? lastTicketingDateTime;
-  int? numberOfBookableSeats;
-  List<Itineraries>? itineraries;
-  Price? price;
-  PricingOptions? pricingOptions;
-  List<String>? validatingAirlineCodes;
-  List<TravelerPricings>? travelerPricings;
 
-  FlightOffers({this.type, this.id, this.source, this.instantTicketingRequired, this.nonHomogeneous, this.oneWay, this.isUpsellOffer, this.lastTicketingDate, this.lastTicketingDateTime, this.numberOfBookableSeats, this.itineraries, this.price, this.pricingOptions, this.validatingAirlineCodes, this.travelerPricings});
-
-  FlightOffers.fromJson(Map<String, dynamic> json) {
-    type = json['type'];
-    id = json['id'];
-    source = json['source'];
-    instantTicketingRequired = json['instantTicketingRequired'];
-    nonHomogeneous = json['nonHomogeneous'];
-    oneWay = json['oneWay'];
-    isUpsellOffer = json['isUpsellOffer'];
-    lastTicketingDate = json['lastTicketingDate'];
-    lastTicketingDateTime = json['lastTicketingDateTime'];
-    numberOfBookableSeats = json['numberOfBookableSeats'];
-    if (json['itineraries'] != null) {
-      itineraries = <Itineraries>[];
-      json['itineraries'].forEach((v) { itineraries!.add(new Itineraries.fromJson(v)); });
-    }
-    price = json['price'] != null ? new Price.fromJson(json['price']) : null;
-    pricingOptions = json['pricingOptions'] != null ? new PricingOptions.fromJson(json['pricingOptions']) : null;
-    validatingAirlineCodes = json['validatingAirlineCodes'].cast<String>();
-    if (json['travelerPricings'] != null) {
-      travelerPricings = <TravelerPricings>[];
-      json['travelerPricings'].forEach((v) { travelerPricings!.add(new TravelerPricings.fromJson(v)); });
-    }
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['type'] = this.type;
-    data['id'] = this.id;
-    data['source'] = this.source;
-    data['instantTicketingRequired'] = this.instantTicketingRequired;
-    data['nonHomogeneous'] = this.nonHomogeneous;
-    data['oneWay'] = this.oneWay;
-    data['isUpsellOffer'] = this.isUpsellOffer;
-    data['lastTicketingDate'] = this.lastTicketingDate;
-    data['lastTicketingDateTime'] = this.lastTicketingDateTime;
-    data['numberOfBookableSeats'] = this.numberOfBookableSeats;
-    if (this.itineraries != null) {
-      data['itineraries'] = this.itineraries!.map((v) => v.toJson()).toList();
-    }
-    if (this.price != null) {
-      data['price'] = this.price!.toJson();
-    }
-    if (this.pricingOptions != null) {
-      data['pricingOptions'] = this.pricingOptions!.toJson();
-    }
-    data['validatingAirlineCodes'] = this.validatingAirlineCodes;
-    if (this.travelerPricings != null) {
-      data['travelerPricings'] = this.travelerPricings!.map((v) => v.toJson()).toList();
-    }
-    return data;
-  }
-}
 
 class Itineraries {
   String? duration;

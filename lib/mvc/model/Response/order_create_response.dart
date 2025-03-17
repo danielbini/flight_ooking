@@ -60,7 +60,7 @@ class Data {
 
   Data.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    id = json['id'];
+    id = json['id']?.toString();
     queuingOfficeId = json['queuingOfficeId'];
     if (json['associatedRecords'] != null) {
       associatedRecords = <AssociatedRecords>[];
@@ -157,7 +157,7 @@ class FlightOffers {
 
   FlightOffers.fromJson(Map<String, dynamic> json) {
     type = json['type'];
-    id = json['id'];
+    id = json['id']?.toString();
     source = json['source'];
     nonHomogeneous = json['nonHomogeneous'];
     lastTicketingDate = json['lastTicketingDate'];
@@ -239,7 +239,7 @@ class Segments {
     number = json['number'];
     aircraft = json['aircraft'] != null ? new Aircraft.fromJson(json['aircraft']) : null;
     duration = json['duration'];
-    id = json['id'];
+    id = json['id']?.toString();
     numberOfStops = json['numberOfStops'];
     if (json['co2Emissions'] != null) {
       co2Emissions = <Co2Emissions>[];
@@ -517,7 +517,7 @@ class Travelers {
   Travelers({this.id, this.dateOfBirth, this.gender, this.name, this.documents, this.contact});
 
   Travelers.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id']?.toString();
     dateOfBirth = json['dateOfBirth'];
     gender = json['gender'];
     name = json['name'] != null ? new Name.fromJson(json['name']) : null;
@@ -840,7 +840,7 @@ class Address {
 
 
 class StoredData {
-  int? id;
+  String? id;
   String? type;
   String? queuingOfficeId;
   String? ticketingOption;
@@ -856,7 +856,7 @@ class StoredData {
   StoredData({this.id, this.type, this.queuingOfficeId, this.ticketingOption, this.ticketingDelay, this.totalPrice, this.currency, this.createdAt, this.updatedAt, this.associatedRecords, this.segments, this.travelers});
 
   StoredData.fromJson(Map<String, dynamic> json) {
-    id = json['id'];
+    id = json['id']?.toString();
     type = json['type'];
     queuingOfficeId = json['queuingOfficeId'];
     ticketingOption = json['ticketingOption'];

@@ -1,7 +1,7 @@
 
 import 'dart:core';
 
-import '../flight_search_response.dart';
+import '../Response/flight_search_response.dart';
 
 class OfferPrice {
   OfferData? data;

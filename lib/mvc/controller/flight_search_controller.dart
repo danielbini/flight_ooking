@@ -4,7 +4,7 @@ import 'package:flight_booking/mvc/controller/Services/TokenService.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
-import '../model/flight_search_response.dart';
+import '../model/Response/flight_search_response.dart';
 
 class ApiController {
   static const String baseUrl =

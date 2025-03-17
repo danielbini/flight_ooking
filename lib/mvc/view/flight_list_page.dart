@@ -1,4 +1,4 @@
-import 'package:flight_booking/mvc/model/flight_search_response.dart';
+import 'package:flight_booking/mvc/model/Response/flight_search_response.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

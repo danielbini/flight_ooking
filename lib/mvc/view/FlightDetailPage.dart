@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 import '../controller/offer_price_controller.dart';
 import '../model/Response/flight_offer_response.dart';
-import '../model/flight_search_response.dart';
+import '../model/Response/flight_search_response.dart';
 import 'AddPassengerDetail.dart';
 
 class FlightDetailPage extends StatefulWidget {
@@ -45,7 +45,7 @@ class _FlightDetailPageState extends State<FlightDetailPage> {
       if (offerPriceResponse != null) {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => PassengerDetailPage(),
+            builder: (context) => PassengerDetailPage( offerPriceResponse: offerPriceResponse!),
           ),
         );
       } else {

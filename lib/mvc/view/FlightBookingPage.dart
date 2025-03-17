@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 import '../controller/flight_search_controller.dart';
-import '../model/flight_search_response.dart';
+import '../model/Response/flight_search_response.dart';
 import 'flight_list_page.dart';
 
 class FlightBookingPage extends StatefulWidget {

@@ -395,16 +395,16 @@ class FareDetailsBySegment {
   String? segmentId;
   String? cabin;
   String? fareBasis;
-  String? classType;
+  String? Fareclass;
   IncludedCheckedBags? includedCheckedBags;
 
-  FareDetailsBySegment({this.segmentId, this.cabin, this.fareBasis, this.classType, this.includedCheckedBags});
+  FareDetailsBySegment({this.segmentId, this.cabin, this.fareBasis, this.Fareclass, this.includedCheckedBags});
 
   FareDetailsBySegment.fromJson(Map<String, dynamic> json) {
   segmentId = json['segmentId'];
   cabin = json['cabin'];
   fareBasis = json['fareBasis'];
-  classType = json['classType'];
+  Fareclass = json['class'];
   includedCheckedBags = json['includedCheckedBags'] != null ? new IncludedCheckedBags.fromJson(json['includedCheckedBags']) : null;
   }
 
@@ -413,7 +413,7 @@ class FareDetailsBySegment {
   data['segmentId'] = this.segmentId;
   data['cabin'] = this.cabin;
   data['fareBasis'] = this.fareBasis;
-  data['classType'] = this.classType;
+  data['class'] = this.Fareclass;
   if (this.includedCheckedBags != null) {
   data['includedCheckedBags'] = this.includedCheckedBags!.toJson();
   }
