@@ -40,7 +40,7 @@ class ApiOrderCreateController {
                   order_create_travelers.Phones(
                     // Fix: use `Phones` instead of `Phone`
                     deviceType: "MOBILE",
-                    countryCallingCode: passenger['countryCode'],
+                    countryCallingCode: passenger?['countryCode']??"251",
                     number: passenger['contactNumber'],
                   )
                 ],

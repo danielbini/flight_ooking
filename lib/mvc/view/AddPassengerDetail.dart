@@ -207,7 +207,7 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                       border: OutlineInputBorder(),
                     ),
                     onChanged: (value) {
-                      _passengerDetails[index]['email'] = value;
+                      _passengerDetails[index]['email'] = value.trim();
                     },
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -235,7 +235,7 @@ class _PassengerDetailPageState extends State<PassengerDetailPage> {
                               : '251', // Ensure a default value if null or invalid
                           onChanged: (value) {
                             setState(() {
-                              _passengerDetails[index]['countryCode'] = value;
+                              _passengerDetails[index]['countryCode'] = value??'251';
                             });
                           },
                           items: [

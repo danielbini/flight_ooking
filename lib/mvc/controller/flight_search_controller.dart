@@ -60,10 +60,10 @@ class ApiController {
           }
           return flightSearchRespnse;
         } else {
-          throw Exception('Failed to  load data: ${response.statusCode}');
+          throw Exception('Failed to  load data offer: ${response.statusCode}');
         }
       } else {
-        throw Exception('Failed to load data: ${tokenResponse.statusCode}');
+        throw Exception('Failed to load data access: ${tokenResponse.statusCode}');
       }
     } catch (e) {
       throw Exception('Error: $e');

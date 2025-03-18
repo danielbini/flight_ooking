@@ -383,7 +383,7 @@ class IncludedCBags {
   });
 
   factory IncludedCBags.fromJson(Map<String, dynamic> json) => IncludedCBags(
-    quantity: json["quantity"],
+    quantity: json["quantity"]?? 0,
   );
 
   Map<String, dynamic> toJson() => {

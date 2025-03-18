@@ -109,13 +109,6 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
       body: SafeArea(
         child: Column(
           children: [
-            ClipPath(
-              clipper: CurvedTopClipper(),
-              child: Container(
-                height: MediaQuery.of(context).size.height * 0.25,
-                color: Colors.blue, // Background color for the curved section
-              ),
-            ),
             Expanded(
               child: SingleChildScrollView(
                 padding: const EdgeInsets.all(16.0),
@@ -124,16 +117,19 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                   children: [
                     SizedBox(height: MediaQuery.of(context).size.height * 0.25),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildTripTypeButton('One-way'),
-                        SizedBox(width: 20),
-                        _buildTripTypeButton('Round-trip'),
-                        SizedBox(width: 20),
-                        _buildTripTypeButton('Multi-city'),
-                      ],
-                    ),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildTripTypeButton('One-way'),
+                          SizedBox(width: 15),
+                          _buildTripTypeButton('Round-trip'),
+                          SizedBox(width: 15),
+                          _buildTripTypeButton('Multi-city'),
+                        ],
+                      ),
+                    )
+                    ,
                     SizedBox(height: 20),
                     Row(
                       children: [

@@ -19,7 +19,11 @@ class _PaymentPageState extends State<PaymentPage> {
   bool isLoading = false;
   final ApiTicketIssueController _apiController = ApiTicketIssueController();
   TicketIssueResponse? ticketIssueResponse;
+  String? selectedMethod;
+  int totalTax(){
 
+    return 1;
+  }
   Future<void> TicketIssue() async {  // Use 'void' instead of 'Void'
     setState(() {
       isLoading = true;
@@ -60,7 +64,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     onPressed: () {
                       Navigator.of(context).pop(); // Close dialog
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => TicketPage()),
+                        MaterialPageRoute(builder: (context) => TicketPage(ticketIssueResponse:ticketIssueResponse)),
                       );
                     },
                     child: Text("View Ticket", style: TextStyle(color: Colors.white)),
@@ -112,12 +116,12 @@ class _PaymentPageState extends State<PaymentPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Total Due: \$14500',
+              'Total Due: ${widget.orderCreateRS.flightOrder?.data?.flightOffers?.first?.price?.total}',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 8),
             Text(
-              'You save \$500',
+              'Youe order id ${widget.orderCreateRS.flightOrder?.data?.associatedRecords?.first?.reference}',
               style: TextStyle(fontSize: 16, color: Colors.green),
             ),
             Text(
@@ -131,16 +135,16 @@ class _PaymentPageState extends State<PaymentPage> {
             SizedBox(height: 16),
             _buildPaymentMethod('PayPal', 'Paypal'),
             _buildPaymentMethod('VISA', 'Visa Card'),
-            _buildPaymentMethod('Stripe', 'Stripe'),
+            _buildPaymentMethod('TeleBirr', 'TeleBirr'),
             Divider(height: 32, thickness: 2),
             Text(
               'Fare Summary',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 16),
-            _buildFareDetail('Adult x1', '\$13000'),
-            _buildFareDetail('Basic Fare', '\$13000'),
-            _buildFareDetail('Taxes', '\$20000'),
+            _buildFareDetail('Adult x1', '${widget.orderCreateRS.flightOrder?.data?.flightOffers?.first?.price?.total}'),
+            _buildFareDetail('Basic Fare', '${widget.orderCreateRS.flightOrder?.data?.flightOffers?.first?.price?.base}'),
+            //_buildFareDetail('Taxes', '${widget.orderCreateRS.flightOrder?.data?.flightOffers?.first?.price?.total-widget.orderCreateRS.flightOrder?.data?.flightOffers?.first?.price?.base}}'),
             Divider(height: 32, thickness: 2),
             Center(
               child: ElevatedButton(
@@ -161,6 +165,7 @@ class _PaymentPageState extends State<PaymentPage> {
 }
 
 Widget _buildPaymentMethod(String method, String description) {
+  bool isSelected = false;
   return Card(
     margin: EdgeInsets.only(bottom: 16),
     child: ListTile(
