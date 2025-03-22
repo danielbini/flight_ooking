@@ -20,7 +20,9 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
   final ApiController _apiController = ApiController();
 
   SearchResponse? flights;
-
+  int _adults = 1;
+  int _children = 0;
+  int _infants = 0;
   int? _passengers;
 
   String _travelClass = 'Economy';
@@ -35,18 +37,114 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
     _returnDateController.dispose();
     super.dispose();
   }
+  void _showPassengerPicker() {
+    int tempAdults = _adults;
+    int tempChildren = _children;
+    int tempInfants = _infants;
 
-  Future<void> _selectDate(
-      BuildContext context, TextEditingController controller) async {
-    DateTime? picked = await showDatePicker(
+    showDialog(
       context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (dialogContext, setDialogState) {
+            return AlertDialog(
+              title: Text('Passengers'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  _buildPassengerRow('Adults', tempAdults, (value) {
+                    setDialogState(() {
+                      tempAdults = value;
+                    });
+                  }),
+                  _buildPassengerRow('Children', tempChildren, (value) {
+                    setDialogState(() {
+                      tempChildren = value;
+                    });
+                  }),
+                  _buildPassengerRow('Infants', tempInfants, (value) {
+                    setDialogState(() {
+                      tempInfants = value;
+                    });
+                  }),
+                ],
+              ),
+                actions: [
+                  SizedBox(
+                    width: double.infinity, // Full width
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        padding: EdgeInsets.symmetric(vertical: 11), // Adjust vertical padding
+                      ),
+                      onPressed: () {
+                        // Update the parent widget's state when "Done" is pressed
+                        setState(() {
+                          _adults = tempAdults;
+                          _children = tempChildren;
+                          _infants = tempInfants;
+                        });
+                        Navigator.of(context).pop(); // Close the dialog
+                      },
+                      child: Text('Done', style: TextStyle(fontSize: 16)),
+                    ),
+                  ),
+                ],
+
+            );
+          },
+        );
+      },
+    );
+  }
+
+  Widget _buildPassengerRow(String label, int value, Function(int) onChanged) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(label),
+        Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.remove),
+              onPressed: () {
+                if (value > 0) {
+                  onChanged(value - 1);
+                }
+              },
+            ),
+            Text(value.toString()),
+            IconButton(
+              icon: Icon(Icons.add),
+              onPressed: () {
+                onChanged(value + 1);
+              },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+  Future<void> _selectDate(
+      BuildContext context, TextEditingController controller,
+      {DateTime? firstDate}) async {
+    DateTime now = DateTime.now();
+    DateTime effectiveFirstDate = firstDate ?? now;
+    DateTime initialDate =
+        effectiveFirstDate.isAfter(now) ? effectiveFirstDate : now;
+
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: initialDate,
+      firstDate: effectiveFirstDate,
       lastDate: DateTime(2100),
     );
     if (picked != null) {
       setState(() {
-        controller.text = DateFormat('yyyy-MM-dd').format(picked);
+        controller.text = picked.toLocal().toString().split(' ')[0];
+        if (controller == _dateController) {
+          _returnDateController.text = ""; // Clear return date if needed
+        }
       });
     }
   }
@@ -128,8 +226,7 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                           _buildTripTypeButton('Multi-city'),
                         ],
                       ),
-                    )
-                    ,
+                    ),
                     SizedBox(height: 20),
                     Row(
                       children: [
@@ -155,26 +252,31 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                     _buildDateField(_dateController, 'Departure Date'),
                     if (_selectedTripType == "Round-trip") SizedBox(height: 20),
                     if (_selectedTripType == "Round-trip")
-                      _buildDateField(_returnDateController, 'Return Date'),
+                      _buildDateField(_returnDateController, 'Return Date',
+                          firstDate: _dateController.text.isNotEmpty
+                              ? DateTime.parse(_dateController.text)
+                              : DateTime.now()),
 
                     SizedBox(height: 20),
                     Row(
                       children: [
                         Text('Passengers:'),
                         SizedBox(width: 10),
-                        DropdownButton<int>(
-                          value: _passengers,
-                          hint: Text('1 Adult, 0 Child, 0 Infants',
-                              style: TextStyle(color: Colors.black)),
-                          items: List.generate(3, (index) => index + 1)
-                              .map((e) => DropdownMenuItem(
-                                  value: e, child: Text(e.toString())))
-                              .toList(),
-                          onChanged: (value) {
-                            setState(() {
-                              _passengers = value;
-                            });
-                          },
+                        Expanded(
+                          child: InkWell(
+                            onTap: _showPassengerPicker,
+                            child: Container(
+                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.grey),
+                                borderRadius: BorderRadius.circular(4),
+                              ),
+                              child: Text(
+                                '$_adults Adult${_adults != 1 ? 's' : ''}, $_children Child${_children != 1 ? 'ren' : ''}, $_infants Infant${_infants != 1 ? 's' : ''}',
+                                style: TextStyle(color: Colors.black),
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),
@@ -212,20 +314,23 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                         style: TextStyle(fontSize: 18, color: Colors.white)),
               ),
             ),
-            BottomNavigationBar(      type: BottomNavigationBarType.fixed, // Ensure all 4 tabs show
-                selectedItemColor: Colors.blue,
-                unselectedItemColor: Colors.grey,
-                showUnselectedLabels: true,
-                items: [
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-              BottomNavigationBarItem(icon: Icon(Icons.book), label: 'My Booking'),
-              BottomNavigationBarItem(icon: Icon(Icons.history), label: 'History'),
-              BottomNavigationBarItem(icon: Icon(Icons.login), label: 'Profile'),
-            ],
-            onTap: (index){
-
-            },),
-
+            BottomNavigationBar(
+              type: BottomNavigationBarType.fixed,
+              // Ensure all 4 tabs show
+              selectedItemColor: Colors.blue,
+              unselectedItemColor: Colors.grey,
+              showUnselectedLabels: true,
+              items: [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.book), label: 'My Booking'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.history), label: 'History'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.login), label: 'Profile'),
+              ],
+              onTap: (index) {},
+            ),
           ],
         ),
       ),
@@ -261,7 +366,8 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
   }
 
   /// ✅ Helper function for date fields
-  Widget _buildDateField(TextEditingController controller, String label) {
+  Widget _buildDateField(TextEditingController controller, String label,
+      {DateTime? firstDate}) {
     return TextField(
       controller: controller,
       decoration: InputDecoration(
@@ -270,7 +376,7 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
       ),
       readOnly: true,
-      onTap: () => _selectDate(context, controller),
+      onTap: () => _selectDate(context, controller, firstDate: firstDate),
     );
   }
 }
@@ -305,3 +411,6 @@ class UpperCaseTextFormatter extends TextInputFormatter {
     );
   }
 }
+
+
+

@@ -11,7 +11,7 @@ class ApiController {
       'https://travelapi.test.tobiyamarketplace.com'; // Replace with actual API URL
 
   Future<SearchResponse> bookFlight(BuildContext context,String origin, String destination,
-      String date, String returndate, int? passengers) async {
+      String date, String returnDate, int? passengers) async {
     const String endpoint = '$baseUrl/api/auth/token';
     SearchResponse  flightSearchRespnse ;
     try {
@@ -32,7 +32,7 @@ class ApiController {
             'originLocationCode': origin,
             'destinationLocationCode': destination,
             'departureDate': date,
-            'returnDate': returndate,
+            if (returnDate.isNotEmpty)'returnDate': returnDate,
             'adults': passengers.toString(),
             'max': '5',
           },
