@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 
 import '../controller/flight_search_controller.dart';
 import '../model/Response/flight_search_response.dart';
+import 'AirportListPage.dart';
 import 'flight_list_page.dart';
 
 class FlightBookingPage extends StatefulWidget {
@@ -24,7 +25,8 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
   int _children = 0;
   int _infants = 0;
   int? _passengers;
-
+  String? _originCode;
+  String? _destinationCode;
   String _travelClass = 'Economy';
   String _selectedTripType = "Round-trip";
   bool isLoading = false;
@@ -81,6 +83,7 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                         // Update the parent widget's state when "Done" is pressed
                         setState(() {
                           _adults = tempAdults;
+                          _passengers = tempAdults;
                           _children = tempChildren;
                           _infants = tempInfants;
                         });
@@ -97,6 +100,39 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
       },
     );
   }
+  Widget _buildODTextField({
+    required TextEditingController controller,
+    required String label,
+    required Function(String) onAirportSelected,
+  }) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(
+        labelText: label,
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10.0)),
+      ),
+      readOnly: true, // Prevent manual typing
+      onTap: () async {
+        // Navigate to AirportSearchScreen
+        await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => AirportSearchScreen(
+              onAirportSelected: (String fullSelection) {
+                // Split the full selection into name and code
+                final split = fullSelection.split('(');
+                final fullName = split[0].trim();
+                final code = split[1].replaceAll(')', '').trim();
+
+                controller.text = fullName; // Display full airport name in the text field
+                onAirportSelected(code); // Pass only the airport code
+              },
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 
   Widget _buildPassengerRow(String label, int value, Function(int) onChanged) {
     return Row(
@@ -153,10 +189,10 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
     setState(() {
       isLoading = true;
     });
-    final String origin = _originController.text;
-    final String destination = _destinationController.text;
+    final String origin = _originCode!;
+    final String destination = _destinationCode!;
     final String date = _dateController.text;
-    final int? passengers = _passengers;
+    final int? passengers = _adults;
     final String returndate = _returnDateController.text;
     if (_selectedTripType == "Round-trip") {
       final String returndate = _returnDateController.text;
@@ -228,25 +264,50 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                       ),
                     ),
                     SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: _buildTextField(_originController, 'Origin'),
-                        ),
-                        IconButton(
-                            onPressed: () {
-                              String temp = _originController.text;
-                              _originController.text =
-                                  _destinationController.text;
-                              _destinationController.text = temp;
-                            },
-                            icon: Icon(Icons.swap_horiz)),
-                        Expanded(
-                          child: _buildTextField(
-                              _destinationController, 'Destination'),
-                        ),
-                      ],
+                Row(
+                  children: [
+                    Expanded(
+                      child: _buildODTextField(
+                        controller: _originController,
+                        label: 'Origin',
+                        onAirportSelected: (String code) {
+                          setState(() {
+                            _originCode = code; // Save the origin airport code for API
+                          });
+                        },
+                      ),
                     ),
+                    IconButton(
+                      onPressed: () {
+                        // Swap origin and destination values
+                        String tempText = _originController.text;
+                        String? tempCode = _originCode;
+
+                        setState(() {
+                          _originController.text = _destinationController.text;
+                          _originCode = _destinationCode;
+
+                          _destinationController.text = tempText;
+                          _destinationCode = tempCode;
+                        });
+                      },
+                      icon: Icon(Icons.swap_horiz),
+                    ),
+                    Expanded(
+                      child: _buildODTextField(
+                        controller: _destinationController,
+                        label: 'Destination',
+                        onAirportSelected: (String code) {
+                          setState(() {
+                            _destinationCode = code; // Save the destination airport code for API
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                )
+
+                ,
 
                     SizedBox(height: 20),
                     _buildDateField(_dateController, 'Departure Date'),
