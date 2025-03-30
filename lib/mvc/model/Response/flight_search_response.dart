@@ -8,18 +8,18 @@ String searchResponse(SearchResponse data) => json.encode(data.toJson());
 class SearchResponse {
   Meta meta;
   List<Datum> data;
-  //Dictionaries dictionaries;
+  Dictionaries dictionaries;
 
   SearchResponse({
     required this.meta,
     required this.data,
-   // required this.dictionaries,
+   required this.dictionaries,
   });
 
   factory SearchResponse.fromJson(Map<String, dynamic> json) => SearchResponse(
     meta: Meta.fromJson(json["meta"]),
     data: List<Datum>.from(json["data"].map((x) => Datum.fromJson(x))),
-   // dictionaries: Dictionaries.fromJson(json["dictionaries"]),
+    dictionaries: Dictionaries.fromJson(json["dictionaries"]),
   );
 
   Map<String, dynamic> toJson() => {
@@ -416,10 +416,10 @@ class TravelerPricingPrice {
 }
 
 class Dictionaries {
-  String locations;
-  DictionariesAircraft aircraft;
-  Currencies currencies;
-  Carriers carriers;
+  final Map<String, Location> locations;
+  final Map<String, String> aircraft;
+  final Map<String, String> currencies;
+  final Map<String, String> carriers;
 
   Dictionaries({
     required this.locations,
@@ -428,71 +428,49 @@ class Dictionaries {
     required this.carriers,
   });
 
-  factory Dictionaries.fromJson(Map<String, dynamic> json) => Dictionaries(
-    locations: json["locations"],
-    aircraft: DictionariesAircraft.fromJson(json["aircraft"]),
-    currencies: Currencies.fromJson(json["currencies"]),
-    carriers: Carriers.fromJson(json["carriers"]),
-  );
+  factory Dictionaries.fromJson(Map<String, dynamic> json) {
+    return Dictionaries(
+      locations: (json['locations'] as Map<String, dynamic>).map(
+            (key, value) => MapEntry(key, Location.fromJson(value)),
+      ),
+      aircraft: Map<String, String>.from(json['aircraft']),
+      currencies: Map<String, String>.from(json['currencies']),
+      carriers: Map<String, String>.from(json['carriers']),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    "locations": locations,
-    "aircraft": aircraft.toJson(),
-    "currencies": currencies.toJson(),
-    "carriers": carriers.toJson(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'locations': locations.map((key, value) => MapEntry(key, value.toJson())),
+      'aircraft': aircraft,
+      'currencies': currencies,
+      'carriers': carriers,
+    };
+  }
 }
 
-class DictionariesAircraft {
-  String the73H;
-  String e90;
+class Location {
+  final String cityCode;
+  final String countryCode;
 
-  DictionariesAircraft({
-    required this.the73H,
-    required this.e90,
+  Location({
+    required this.cityCode,
+    required this.countryCode,
   });
 
-  factory DictionariesAircraft.fromJson(Map<String, dynamic> json) => DictionariesAircraft(
-    the73H: json["73H"],
-    e90: json["E90"],
-  );
+  factory Location.fromJson(Map<String, dynamic> json) {
+    return Location(
+      cityCode: json['cityCode'],
+      countryCode: json['countryCode'],
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    "73H": the73H,
-    "E90": e90,
-  };
-}
-
-class Carriers {
-  String kq;
-
-  Carriers({
-    required this.kq,
-  });
-
-  factory Carriers.fromJson(Map<String, dynamic> json) => Carriers(
-    kq: json["KQ"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "KQ": kq,
-  };
-}
-
-class Currencies {
-  String eur;
-
-  Currencies({
-    required this.eur,
-  });
-
-  factory Currencies.fromJson(Map<String, dynamic> json) => Currencies(
-    eur: json["EUR"],
-  );
-
-  Map<String, dynamic> toJson() => {
-    "EUR": eur,
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'cityCode': cityCode,
+      'countryCode': countryCode,
+    };
+  }
 }
 
 

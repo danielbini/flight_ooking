@@ -271,25 +271,25 @@ class Segments {
 }
 
 class Departure {
-  String? iataCode;
-  String? terminal;
-  String? at;
+  String iataCode;
+  String terminal;
+  DateTime at;
+  Departure({
+    required this.iataCode,
+    required this.terminal,
+    required this.at,
+  });
+  factory Departure.fromJson(Map<String, dynamic> json) => Departure(
+    iataCode: json["iataCode"],
+    terminal: json["terminal"]?? "",
+    at: DateTime.parse(json["at"]),
+  );
 
-  Departure({this.iataCode, this.terminal, this.at});
-
-  Departure.fromJson(Map<String, dynamic> json) {
-    iataCode = json['iataCode'];
-    terminal = json['terminal'];
-    at = json['at'];
-  }
-
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = new Map<String, dynamic>();
-    data['iataCode'] = this.iataCode;
-    data['terminal'] = this.terminal;
-    data['at'] = this.at;
-    return data;
-  }
+  Map<String, dynamic> toJson() => {
+    "iataCode": iataCode,
+    "terminal": terminal,
+    "at": at.toIso8601String().split(".")[0],
+  };
 }
 
 class Aircraft {

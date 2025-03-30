@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../model/Request/order_create_request.dart';
 import '../model/Response/flight_offer_response.dart';
 import '../model/Response/order_create_response.dart';
@@ -121,7 +122,10 @@ class ApiOrderCreateController {
         body: jsonEncode(orderCreateRQ.toJson()),
       );
       if (response.statusCode == 201) {
-        return OrderCreateRS.fromJson(jsonDecode(response.body));
+        final orderResponse = OrderCreateRS.fromJson(jsonDecode(response.body));
+       var sdfs= await _saveOrder(orderResponse);
+        final savedOrders = await getSavedOrders();
+        return orderResponse;
       } else {
         throw Exception("Failed to fetch offer price");
       }
@@ -129,4 +133,32 @@ class ApiOrderCreateController {
       throw Exception("Failed to fetch offer price");
     }
   }
+}
+Future<void> _saveOrder(OrderCreateRS order) async {
+  final prefs = await SharedPreferences.getInstance();
+
+  // Get existing orders
+  final String? ordersJson = prefs.getString('saved_orders');
+  List<dynamic> orders = [];
+
+  if (ordersJson != null) {
+    orders = jsonDecode(ordersJson);
+  }
+
+  // Add new order
+  orders.add(order.toJson());
+
+  // Save back
+  await prefs.setString('saved_orders', jsonEncode(orders));
+}
+Future<List<OrderCreateRS>> getSavedOrders() async {
+  final prefs = await SharedPreferences.getInstance();
+  final String? ordersJson = prefs.getString('saved_orders');
+
+  if (ordersJson == null) {
+    return [];
+  }
+
+  final List<dynamic> ordersList = jsonDecode(ordersJson);
+  return ordersList.map((json) => OrderCreateRS.fromJson(json)).toList();
 }

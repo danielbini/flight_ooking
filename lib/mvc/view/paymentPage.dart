@@ -64,7 +64,7 @@ class _PaymentPageState extends State<PaymentPage> {
                     onPressed: () {
                       Navigator.of(context).pop(); // Close dialog
                       Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => TicketPage(ticketIssueResponse:ticketIssueResponse)),
+                        MaterialPageRoute(builder: (context) => TicketPage(ticketIssueResponse:ticketIssueResponse,orderCreateRS:widget.orderCreateRS)),
                       );
                     },
                     child: Text("View Ticket", style: TextStyle(color: Colors.white)),

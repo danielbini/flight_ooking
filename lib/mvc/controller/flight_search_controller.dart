@@ -37,7 +37,6 @@ class ApiController {
             'max': '5',
           },
         );
-        final data = jsonDecode(tokenResponse.body);
         final response = await http.get(
           uri,
           headers: {

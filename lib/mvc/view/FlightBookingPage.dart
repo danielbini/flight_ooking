@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import '../controller/flight_search_controller.dart';
 import '../model/Response/flight_search_response.dart';
 import 'AirportListPage.dart';
+import 'FlightTypeSelector.dart';
+import 'RecentBookingPages.dart';
 import 'flight_list_page.dart';
 
 class FlightBookingPage extends StatefulWidget {
@@ -30,6 +32,7 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
   String _travelClass = 'Economy';
   String _selectedTripType = "Round-trip";
   bool isLoading = false;
+  int _currentIndex = 0;
 
   @override
   void dispose() {
@@ -39,6 +42,7 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
     _returnDateController.dispose();
     super.dispose();
   }
+
   void _showPassengerPicker() {
     int tempAdults = _adults;
     int tempChildren = _children;
@@ -71,35 +75,36 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                   }),
                 ],
               ),
-                actions: [
-                  SizedBox(
-                    width: double.infinity, // Full width
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: EdgeInsets.symmetric(vertical: 11), // Adjust vertical padding
-                      ),
-                      onPressed: () {
-                        // Update the parent widget's state when "Done" is pressed
-                        setState(() {
-                          _adults = tempAdults;
-                          _passengers = tempAdults;
-                          _children = tempChildren;
-                          _infants = tempInfants;
-                        });
-                        Navigator.of(context).pop(); // Close the dialog
-                      },
-                      child: Text('Done', style: TextStyle(fontSize: 16)),
+              actions: [
+                SizedBox(
+                  width: double.infinity, // Full width
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: EdgeInsets.symmetric(
+                          vertical: 11), // Adjust vertical padding
                     ),
+                    onPressed: () {
+                      // Update the parent widget's state when "Done" is pressed
+                      setState(() {
+                        _adults = tempAdults;
+                        _passengers = tempAdults;
+                        _children = tempChildren;
+                        _infants = tempInfants;
+                      });
+                      Navigator.of(context).pop(); // Close the dialog
+                    },
+                    child: Text('Done', style: TextStyle(fontSize: 16)),
                   ),
-                ],
-
+                ),
+              ],
             );
           },
         );
       },
     );
   }
+
   Widget _buildODTextField({
     required TextEditingController controller,
     required String label,
@@ -123,7 +128,8 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                 final fullName = split[0].trim();
                 final code = split[1].replaceAll(')', '').trim();
 
-                controller.text = fullName; // Display full airport name in the text field
+                controller.text =
+                    fullName; // Display full airport name in the text field
                 onAirportSelected(code); // Pass only the airport code
               },
             ),
@@ -132,7 +138,6 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
       },
     );
   }
-
 
   Widget _buildPassengerRow(String label, int value, Function(int) onChanged) {
     return Row(
@@ -161,6 +166,7 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
       ],
     );
   }
+
   Future<void> _selectDate(
       BuildContext context, TextEditingController controller,
       {DateTime? firstDate}) async {
@@ -243,121 +249,147 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
       body: SafeArea(
         child: Column(
           children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(height: MediaQuery.of(context).size.height * 0.25),
+            Container(
+              height: 160, // Adjust height as needed
+              width: double.infinity,
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  bottomLeft: Radius.circular(20),
+                  bottomRight:
+                      Radius.circular(20), // Curve for bottom-right corner
+                ),
+                child: Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage('assets/images/newbanner.jpg'),
+                      fit: BoxFit.cover,
+                    ),
+                  ),
+                ),
+              ),
+            ),
 
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
+            Expanded(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  return SingleChildScrollView(
+                    physics: AlwaysScrollableScrollPhysics(), // Ensures scrolling even if content is small
+                    child: ConstrainedBox(
+                      constraints: BoxConstraints(
+                        minHeight: constraints.maxHeight, // Forces minimum height = available space
+                      ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          _buildTripTypeButton('One-way'),
-                          SizedBox(width: 15),
-                          _buildTripTypeButton('Round-trip'),
-                          SizedBox(width: 15),
-                          _buildTripTypeButton('Multi-city'),
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.15),
+
+                          FlightTypeSelector(
+                            onTypeSelected: (String type) {
+                              setState(() {
+                                _selectedTripType = type;
+                              }); // For debugging
+                            },
+                          ),
+                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: _buildODTextField(
+                                  controller: _originController,
+                                  label: 'Origin',
+                                  onAirportSelected: (String code) {
+                                    setState(() {
+                                      _originCode =
+                                          code;
+                                    });
+                                  },
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: () {
+                                  String tempText = _originController.text;
+                                  String? tempCode = _originCode;
+
+                                  setState(() {
+                                    _originController.text =
+                                        _destinationController.text;
+                                    _originCode = _destinationCode;
+
+                                    _destinationController.text = tempText;
+                                    _destinationCode = tempCode;
+                                  });
+                                },
+                                icon: Icon(Icons.swap_horiz),
+                              ),
+                              Expanded(
+                                child: _buildODTextField(
+                                  controller: _destinationController,
+                                  label: 'Destination',
+                                  onAirportSelected: (String code) {
+                                    setState(() {
+                                      _destinationCode =
+                                          code;
+                                    });
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          SizedBox(height: 20),
+                          _buildDateField(_dateController, 'Departure Date'),
+                          if (_selectedTripType == "Round-trip") SizedBox(height: 20),
+                          if (_selectedTripType == "Round-trip")
+                            _buildDateField(_returnDateController, 'Return Date',
+                                firstDate: _dateController.text.isNotEmpty
+                                    ? DateTime.parse(_dateController.text)
+                                    : DateTime.now()),
+
+                          SizedBox(height: 20),
+                          Row(
+                            children: [
+                              Text('Passengers:'),
+                              SizedBox(width: 10),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: _showPassengerPicker,
+                                  child: Container(
+                                    padding: EdgeInsets.symmetric(
+                                        horizontal: 15, vertical: 8),
+                                    decoration: BoxDecoration(
+                                      border: Border.all(color: Colors.grey),
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Text(
+                                      '$_adults Adult${_adults != 1 ? 's' : ''}, $_children Child${_children != 1 ? 'ren' : ''}, $_infants Infant${_infants != 1 ? 's' : ''}',
+                                      style: TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          DropdownButtonFormField<String>(
+                            value: _travelClass,
+                            decoration: InputDecoration(labelText: 'Travel Class'),
+                            items: ['Economy', 'Business', 'First Class']
+                                .map(
+                                    (e) => DropdownMenuItem(value: e, child: Text(e)))
+                                .toList(),
+                            onChanged: (value) {
+                              setState(() {
+                                _travelClass = value!;
+                              });
+                            },
+                          ),
+                          // Extra space for scrolling
                         ],
                       ),
                     ),
-                    SizedBox(height: 20),
-                Row(
-                  children: [
-                    Expanded(
-                      child: _buildODTextField(
-                        controller: _originController,
-                        label: 'Origin',
-                        onAirportSelected: (String code) {
-                          setState(() {
-                            _originCode = code; // Save the origin airport code for API
-                          });
-                        },
-                      ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        // Swap origin and destination values
-                        String tempText = _originController.text;
-                        String? tempCode = _originCode;
-
-                        setState(() {
-                          _originController.text = _destinationController.text;
-                          _originCode = _destinationCode;
-
-                          _destinationController.text = tempText;
-                          _destinationCode = tempCode;
-                        });
-                      },
-                      icon: Icon(Icons.swap_horiz),
-                    ),
-                    Expanded(
-                      child: _buildODTextField(
-                        controller: _destinationController,
-                        label: 'Destination',
-                        onAirportSelected: (String code) {
-                          setState(() {
-                            _destinationCode = code; // Save the destination airport code for API
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                )
-
-                ,
-
-                    SizedBox(height: 20),
-                    _buildDateField(_dateController, 'Departure Date'),
-                    if (_selectedTripType == "Round-trip") SizedBox(height: 20),
-                    if (_selectedTripType == "Round-trip")
-                      _buildDateField(_returnDateController, 'Return Date',
-                          firstDate: _dateController.text.isNotEmpty
-                              ? DateTime.parse(_dateController.text)
-                              : DateTime.now()),
-
-                    SizedBox(height: 20),
-                    Row(
-                      children: [
-                        Text('Passengers:'),
-                        SizedBox(width: 10),
-                        Expanded(
-                          child: InkWell(
-                            onTap: _showPassengerPicker,
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 8),
-                              decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey),
-                                borderRadius: BorderRadius.circular(4),
-                              ),
-                              child: Text(
-                                '$_adults Adult${_adults != 1 ? 's' : ''}, $_children Child${_children != 1 ? 'ren' : ''}, $_infants Infant${_infants != 1 ? 's' : ''}',
-                                style: TextStyle(color: Colors.black),
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    DropdownButtonFormField<String>(
-                      value: _travelClass,
-                      decoration: InputDecoration(labelText: 'Travel Class'),
-                      items: ['Economy', 'Business', 'First Class']
-                          .map(
-                              (e) => DropdownMenuItem(value: e, child: Text(e)))
-                          .toList(),
-                      onChanged: (value) {
-                        setState(() {
-                          _travelClass = value!;
-                        });
-                      },
-                    ),
-                    // Extra space for scrolling
-                  ],
-                ),
+                  );
+                },
               ),
             ),
             // Button stays fixed at the bottom
@@ -390,7 +422,23 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                 BottomNavigationBarItem(
                     icon: Icon(Icons.login), label: 'Profile'),
               ],
-              onTap: (index) {},
+              onTap: (index) {
+                setState(() {
+                  _currentIndex=index;
+                });
+                if(index==1){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BookingPage()),
+                  );
+                }
+                if(index==2){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => BookingPage()),
+                  );
+                }
+              },
             ),
           ],
         ),
@@ -472,6 +520,3 @@ class UpperCaseTextFormatter extends TextInputFormatter {
     );
   }
 }
-
-
-
