@@ -1,4 +1,5 @@
 import 'package:flight_booking/mvc/model/Response/ticket_issue_response.dart';
+import 'package:flight_booking/mvc/view/HistoryPage.dart';
 import 'package:flight_booking/mvc/view/RecentBookingPages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -347,10 +348,10 @@ class _TicketPageState extends State<TicketPage> {
                 MaterialPageRoute(builder: (context) => BookingPage()),
               );
             }
-            if (index == 0) {
+            if (index == 2) {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => BookingPage()),
+                MaterialPageRoute(builder: (context) => HistoryPage()),
               );
             }
           },
@@ -361,7 +362,7 @@ class _TicketPageState extends State<TicketPage> {
     double totalprice = double.parse(total);
     double baseprice = double.parse(base);
     double tax=totalprice-baseprice;
-    return tax.toString();
+    return tax.toStringAsFixed(2);
   }
   String formatDuration(String duration) {
     final regex = RegExp(r'PT(\d+H)?(\d+M)?');

@@ -79,6 +79,12 @@ class _HistoryPageState extends State<HistoryPage> {
               MaterialPageRoute(builder: (context) => BookingPage()),
             );
           }
+          if(index==2){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => HistoryPage()),
+            );
+          }
 
         },
       ),

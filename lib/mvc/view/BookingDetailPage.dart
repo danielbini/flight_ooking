@@ -1,3 +1,4 @@
+import 'package:flight_booking/mvc/view/HistoryPage.dart';
 import 'package:flight_booking/mvc/view/RecentBookingPages.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -438,10 +439,16 @@ class _BookingDetailPageState extends State<BookingDetailPage> {
                 context,
                 MaterialPageRoute(builder: (context) => FlightBookingPage()),
               );
-            }if (index == 2) {
+            }if (index == 1) {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (context) => BookingPage()),
+              );
+            }
+            if(index==2){
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => HistoryPage()),
               );
             }
           },
