@@ -1,3 +1,4 @@
+import 'package:flight_booking/mvc/view/HistoryPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -384,7 +385,8 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                               });
                             },
                           ),
-                          // Extra space for scrolling
+                          SizedBox(height: 20),
+
                         ],
                       ),
                     ),
@@ -435,7 +437,7 @@ class _FlightBookingPageState extends State<FlightBookingPage> {
                 if(index==2){
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => BookingPage()),
+                    MaterialPageRoute(builder: (context) => HistoryPage()),
                   );
                 }
               },

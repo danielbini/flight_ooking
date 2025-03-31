@@ -23,6 +23,21 @@ class _AirportSearchScreenState extends State<AirportSearchScreen> {
     'San Francisco International (SFO)',
     'Chicago O\'Hare International (ORD)',
     'Dallas/Fort Worth International (DFW)',
+    'London Heathrow United Kingdom (LHR)',
+    'Frankfurt Germany Europe (FRA)',
+    'Paris Charles de Gaulle France Europe (CDG)',
+    'Tokyo Haneda Japan Asia (HND)',
+    'Beijing Capital China Asia (PEK)',
+    'Sydney Kingsford Smith Australia Oceania (SYD)',
+    'Toronto Pearson Canada North America (YYZ)',
+    'Los Angeles International United States of America (LAX)',
+    'Johannesburg OR Tambo South Africa Africa (JNB)',
+    'Cairo International Egypt Africa (CAI)',
+    'São Paulo Guarulhos Brazil South America (GRU)',
+    'Mexico City Benito Juárez Mexico North America (MEX)',
+    'Singapore Changi Singapore Asia (SIN)',
+    'Delhi Indira Gandhi India Asia (DEL)',
+    'Hong Kong International Hong Kong Asia (HKG)',
   ];
   List<String> _filteredAirports = [];
 

@@ -334,7 +334,7 @@ class Price {
   String? currency;
   String? total;
   String? base;
-  List<Fees>? fees;
+  List<taxes>? fees;
   String? grandTotal;
   String? billingCurrency;
 
@@ -345,8 +345,8 @@ class Price {
     total = json['total'];
     base = json['base'];
     if (json['fees'] != null) {
-      fees = <Fees>[];
-      json['fees'].forEach((v) { fees!.add(new Fees.fromJson(v)); });
+      fees = <taxes>[];
+      json['fees'].forEach((v) { fees!.add(new taxes.fromJson(v)); });
     }
     grandTotal = json['grandTotal'];
     billingCurrency = json['billingCurrency'];
@@ -366,13 +366,13 @@ class Price {
   }
 }
 
-class Fees {
+class taxes {
   String? amount;
   String? type;
 
-  Fees({this.amount, this.type});
+  taxes({this.amount, this.type});
 
-  Fees.fromJson(Map<String, dynamic> json) {
+  taxes.fromJson(Map<String, dynamic> json) {
     amount = json['amount'];
     type = json['type'];
   }

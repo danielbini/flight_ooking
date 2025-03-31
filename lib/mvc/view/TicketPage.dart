@@ -1,4 +1,5 @@
 import 'package:flight_booking/mvc/model/Response/ticket_issue_response.dart';
+import 'package:flight_booking/mvc/view/RecentBookingPages.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -105,10 +106,14 @@ class _TicketPageState extends State<TicketPage> {
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               SizedBox(height: 8),
-                              Text('3h 40m',
+                              Text('${formatDuration(widget.orderCreateRS!.flightOrder!.data!.flightOffers!.first.itineraries!.first!.segments!.first!.duration!)}',
                                   style: TextStyle(color: Colors.grey)),
-                              Icon(Icons.swap_horiz,
-                                  size: 40, color: Colors.blue),
+                              Container(
+                                height: 2,  // Thickness of the line
+                                width: 80,  // Width of the line (customize as needed)
+                                color: Colors.blue,
+                              ),
+                              SizedBox(height: 8),
                               Text(
                                   '${widget.orderCreateRS!.flightOrder!.data!.flightOffers!.first.itineraries!.first.segments!.first.co2Emissions!.first.cabin}',
                                   style: TextStyle(color: Colors.grey)),
@@ -148,11 +153,12 @@ class _TicketPageState extends State<TicketPage> {
                               ),
                             ],
                           ),
+
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                'Cabin  to Airlines',
+                                'Cabin to Airlines',
 
                               ),
                             ],
@@ -161,7 +167,7 @@ class _TicketPageState extends State<TicketPage> {
                             crossAxisAlignment: CrossAxisAlignment.end,
                             children: [
                               Text(
-                                'Check-in: 30 Kg',
+                                'Check-in: ${widget.orderCreateRS!.flightOrder!.data!.flightOffers!.first.itineraries!.first.segments!.first!.co2Emissions!.first!.weight! } ${widget.orderCreateRS!.flightOrder!.data!.flightOffers!.first.itineraries!.first.segments!.first!.co2Emissions!.first!.weightUnit!}',
 
                               ),
                             ],
@@ -192,23 +198,29 @@ class _TicketPageState extends State<TicketPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Passenger Name:'),
-                          Text('Mr. Shadul Islam'),
+                          Text('${widget.orderCreateRS!.flightOrder!.data!.travelers!.first.name!.firstName} ${widget.orderCreateRS!.flightOrder!.data!.travelers!.first.name!.lastName}'),
                         ],
                       ),
+                      SizedBox(height: 05,),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Airline PNR:'),
-                          Text('AY0926'),
+                          Text('${widget.orderCreateRS!.flightOrder!.data!.queuingOfficeId!}',style: TextStyle(color: Colors.green,fontWeight: FontWeight.bold),),
                         ],
                       ),
+                      SizedBox(height: 05,),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Ticket Number:'),
-                          Text('99994565444'),
+                          Text('${widget.ticketIssueResponse!.ticket!.ticketNumber}'),
                         ],
                       ),
+                      SizedBox(height: 05,),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -216,13 +228,17 @@ class _TicketPageState extends State<TicketPage> {
                           Text('Not Confirmed'),
                         ],
                       ),
+                      SizedBox(height: 05,),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Class | Cabin:'),
-                          Text('V | Economy'),
+                          Text('${widget.orderCreateRS!.flightOrder!.data!.flightOffers!.first.travelerPricings!.first!.fareDetailsBySegment!.first!.cabin}'),
                         ],
                       ),
+                      SizedBox(height: 05,),
+
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -250,14 +266,14 @@ class _TicketPageState extends State<TicketPage> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Basic Fare:'),
-                          Text('\$13000'),
+                          Text('${widget!.orderCreateRS!.flightOrder!.data!.flightOffers!.first!.travelerPricings!.first!.price!.base}'),
                         ],
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Taxes:'),
-                          Text('\$2000'),
+                          Text('${calculateTotalTax(widget!.orderCreateRS!.flightOrder!.data!.flightOffers!.first!.travelerPricings!.first!.price!.total!,widget!.orderCreateRS!.flightOrder!.data!.flightOffers!.first!.travelerPricings!.first!.price!.base!)}'),
                         ],
                       ),
                       Row(
@@ -290,7 +306,7 @@ class _TicketPageState extends State<TicketPage> {
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           Text(
-                            '\$14500',
+                            '${widget!.orderCreateRS!.flightOrder!.data!.flightOffers!.first!.travelerPricings!.first.price!.total}',
                             style: TextStyle(
                                 fontWeight: FontWeight.bold, fontSize: 16),
                           ),
@@ -325,11 +341,46 @@ class _TicketPageState extends State<TicketPage> {
                 MaterialPageRoute(builder: (context) => FlightBookingPage()),
               );
             }
+            if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => BookingPage()),
+              );
+            }
+            if (index == 0) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => BookingPage()),
+              );
+            }
           },
         ));
 
   }
+  String calculateTotalTax(String total,String base) {
+    double totalprice = double.parse(total);
+    double baseprice = double.parse(base);
+    double tax=totalprice-baseprice;
+    return tax.toString();
+  }
+  String formatDuration(String duration) {
+    final regex = RegExp(r'PT(\d+H)?(\d+M)?');
+    final match = regex.firstMatch(duration);
 
+    int hours = 0;
+    int minutes = 0;
+
+    if (match != null) {
+      if (match.group(1) != null) {
+        hours = int.parse(match.group(1)!.replaceAll('H', ''));
+      }
+      if (match.group(2) != null) {
+        minutes = int.parse(match.group(2)!.replaceAll('M', ''));
+      }
+    }
+
+    return '$hours h $minutes m';
+  }
   String formatDate(String dateTimeString) {
     try {
       // Parse the ISO 8601 date string

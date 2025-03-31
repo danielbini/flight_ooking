@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flight_booking/mvc/view/HistoryPage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -9,13 +8,14 @@ import '../controller/order_create_controller.dart';
 import '../model/Response/order_create_response.dart';
 import 'BookingDetailPage.dart';
 import 'FlightBookingPage.dart';
+import 'RecentBookingPages.dart';
 
-class BookingPage extends StatefulWidget {
+class HistoryPage extends StatefulWidget {
   @override
-  _BookingPageState createState() => _BookingPageState();
+  _HistoryPageState createState() => _HistoryPageState();
 }
 
-class _BookingPageState extends State<BookingPage> {
+class _HistoryPageState extends State<HistoryPage> {
   List<OrderCreateRS> orders = [];
   bool isLoading = true;
 
@@ -46,15 +46,15 @@ class _BookingPageState extends State<BookingPage> {
       body: isLoading
           ? Center(child: CircularProgressIndicator())
           : orders.isEmpty
-              ? Center(child: Text('No bookings found'))
-              : ListView.builder(
-                  padding: EdgeInsets.all(16),
-                  itemCount: orders.length,
-                  itemBuilder: (context, index) {
-                    final order = orders[index];
-                    return _buildBookingCard(order);
-                  },
-                ),
+          ? Center(child: Text('No bookings found'))
+          : ListView.builder(
+        padding: EdgeInsets.all(16),
+        itemCount: orders.length,
+        itemBuilder: (context, index) {
+          final order = orders[index];
+          return _buildBookingCard(order);
+        },
+      ),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
         items: [
@@ -67,18 +67,18 @@ class _BookingPageState extends State<BookingPage> {
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         onTap: (index) {
-        if(index==0){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => FlightBookingPage()),
-          );
-        }
-        if(index==2){
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => HistoryPage()),
-          );
-        }
+          if(index==0){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => FlightBookingPage()),
+            );
+          }
+          if(index==1){
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => BookingPage()),
+            );
+          }
 
         },
       ),
@@ -108,7 +108,7 @@ class _BookingPageState extends State<BookingPage> {
             // Blue background section
             Container(
               decoration: BoxDecoration(
-                color: Colors.blue, // Light blue background
+                color: Colors.white, // Light blue background
                 borderRadius: BorderRadius.only(
                   topLeft: Radius.circular(8),
                   topRight: Radius.circular(8),
@@ -133,37 +133,38 @@ class _BookingPageState extends State<BookingPage> {
                           ),
                         ),
                       ),
-                      IconButton(
-                        icon: Icon(Icons.delete, color: Colors.red),
-                        onPressed: () => _deleteOrder(order),
-                        padding: EdgeInsets.zero,
-                        constraints: BoxConstraints(),
-                      ),
+                      Text( 'Confirmed ',
+                        style: TextStyle(
+                          color: Colors.green,
+                          fontSize: 14,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
                     ],
                   ),
                   SizedBox(height: 8),
                   // Price and class row
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        order.flightOrder?.data?.flightOffers?.first.itineraries?.first.segments?.first.co2Emissions?.first.cabin ?? 'Economy',
-                        style: TextStyle(
-                          color: Colors.blue[900],
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Text(
-                        '${order.flightOrder?.data?.flightOffers?.first.price?.currency ?? ''} '
-                            '${order.flightOrder?.data?.flightOffers?.first.price?.total ?? '0'}',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.blue[900],
-                        ),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       order.flightOrder?.data?.flightOffers?.first.itineraries?.first.segments?.first.co2Emissions?.first.cabin ?? 'Economy',
+                  //       style: TextStyle(
+                  //         color: Colors.blue[900],
+                  //         fontWeight: FontWeight.w500,
+                  //       ),
+                  //     ),
+                  //     Text(
+                  //       '${order.flightOrder?.data?.flightOffers?.first.price?.currency ?? ''} '
+                  //           '${order.flightOrder?.data?.flightOffers?.first.price?.total ?? '0'}',
+                  //       style: TextStyle(
+                  //         fontWeight: FontWeight.bold,
+                  //         fontSize: 16,
+                  //         color: Colors.blue[900],
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
@@ -256,7 +257,7 @@ class _BookingPageState extends State<BookingPage> {
         // Update UI
         setState(() {
           orders.removeWhere(
-              (o) => o.storedData!.id! == order.flightOrder!.data!.id!);
+                  (o) => o.storedData!.id! == order.flightOrder!.data!.id!);
           isLoading = false;
         });
 
