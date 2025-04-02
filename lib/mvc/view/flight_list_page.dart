@@ -49,7 +49,7 @@ class _FlightListPageState extends State<FlightListPage> {
                     Column(
                       children: [
                         Text(
-                          '${widget?.flightData?.data?.first?.itineraries?.first?.segments?.first?.departure.iataCode} ',
+                          '${widget.flightData.data.first.itineraries.first.segments.first.departure.iataCode} ',
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.normal,
@@ -68,7 +68,7 @@ class _FlightListPageState extends State<FlightListPage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          ' ${widget?.flightData?.data?.first?.itineraries?.first?.segments?.last?.arrival.iataCode}',
+                          ' ${widget.flightData.data.first.itineraries.first.segments.last.arrival.iataCode}',
                           style: TextStyle(
                             fontSize: 40,
                             fontWeight: FontWeight.normal,
@@ -89,8 +89,8 @@ class _FlightListPageState extends State<FlightListPage> {
                         Text('Departure',
                             style: TextStyle(color: Colors.white)),
                         Text(
-                            '${widget?.flightData?.data?.first?.itineraries?.first?.segments?.first?.departure.at.hour}:${widget?.flightData?.data?.first?.itineraries?.first?.segments?.first?.departure.at.minute.toString().padLeft(2, '0')}', style: TextStyle(color: Colors.white)),
-                        Text(DateFormat('MMM d, y').format(widget!.flightData!.data!.first!.itineraries!.first!.segments!.first!.departure!.at), style: TextStyle(color: Colors.white)),
+                            '${widget.flightData.data.first.itineraries.first.segments.first.departure.at.hour}:${widget.flightData.data.first.itineraries.first.segments.first.departure.at.minute.toString().padLeft(2, '0')}', style: TextStyle(color: Colors.white)),
+                        Text(DateFormat('MMM d, y').format(widget.flightData.data.first.itineraries.first.segments.first.departure.at), style: TextStyle(color: Colors.white)),
                       ],
                     ),
                     Column(
@@ -102,7 +102,7 @@ class _FlightListPageState extends State<FlightListPage> {
                         ),
                         SizedBox(height: 8),
                         Text(
-                            '${widget.flightData.data!.first.itineraries!.first.segments!.length- 1} ${widget?.flightData?.data?.first?.itineraries?.first?.segments!.length == 1 ? 'Stop' : 'Stops'}', style: TextStyle(color: Colors.white)),
+                            '${widget.flightData.data.first.itineraries!.first.segments.length- 1} ${widget.flightData.data.first.itineraries.first.segments!.length == 1 ? 'Stop' : 'Stops'}', style: TextStyle(color: Colors.white)),
                       ],
                     ),
                     Column(
@@ -151,144 +151,144 @@ class FlightCard extends StatelessWidget {
         SizedBox(height: 20),
         ...flight
             .map((flight) => GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => FlightDetailPage(flight: flight,opratingAirline :getAirlineName(flight.itineraries.first.segments.first
-                            .carrierCode)),
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => FlightDetailPage(flight: flight,opratingAirline :getAirlineName(flight.itineraries.first.segments.first
+                    .carrierCode)),
+              ),
+            );
+          },
+          child: Card(
+            elevation: 4.0,
+            margin: EdgeInsets.only(bottom: 30.0),
+            child: Padding(
+              padding: EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Image.network(
+                        'https://pics.avs.io/300/300/${flight.itineraries.first.segments.first.carrierCode}.png',
+                        width: 30, // Adjust size as needed
+                        height: 30,
+                        errorBuilder: (context, error, stackTrace) {
+                          // Return an empty container if the image fails to load
+                          return SizedBox(width: 24, height: 24);
+                        },
                       ),
-                    );
-                  },
-                  child: Card(
-                    elevation: 4.0,
-                    margin: EdgeInsets.only(bottom: 30.0),
-                    child: Padding(
-                      padding: EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Image.network(
-                                'https://pics.avs.io/300/300/${flight.itineraries.first.segments.first.carrierCode}.png',
-                                width: 30, // Adjust size as needed
-                                height: 30,
-                                errorBuilder: (context, error, stackTrace) {
-                                  // Return an empty container if the image fails to load
-                                  return SizedBox(width: 24, height: 24);
-                                },
-                              ),
-                              Text(getAirlineName(flight.itineraries.first.segments.first
-                                  .carrierCode)
-                               ,
-                                style: TextStyle(
-                                    fontSize: 16, fontWeight: FontWeight.normal),
-                              ),
-                               // Add some spacing between text and logo
-
-                              Text(
-                                '${flight.price.total} ${flight.price.currency}',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.blue),
-                              ),
-                            ],
-                          ),
-                          SizedBox(height: 08),
-
-                          Divider(  // This adds the separator line
-                            height: 1,
-                            thickness: 4,
-                            color: Colors.grey[300],
-                          ),
-                          SizedBox(height: 12),
-                          ...flight.itineraries.map((itinerary) {
-                            return Column(
-                              children: [
-                                Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          itinerary.segments.first.departure
-                                              .iataCode,
-                                          style: TextStyle(
-                                              fontSize: 14,fontWeight: FontWeight.normal),
-                                        ),
-                                        Text(
-                                          '${formatDate(itinerary.segments.first.departure.at.toString())} ',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          '${itinerary.segments.first.departure.at.hour}:${itinerary.segments.first.departure.at.minute.toString().padLeft(2, '0')}',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-
-                                      ],
-                                    ),
-                                    Column(
-                                      children: [
-                                        Container(
-                                          height: 2,  // Thickness of the line
-                                          width: 80,  // Width of the line (customize as needed)
-                                          color: Colors.blue,
-                                        ),
-                                        SizedBox(height: 8),  // Optional spacing
-                                        Text(
-                                          '${formatDuration(itinerary.duration)}',
-                                          style: TextStyle(fontSize: 14),
-                                        ),
-                                        Text(
-                                          '${itinerary.segments.length - 1} ${itinerary.segments.length == 1 ? 'Stop' : 'Stops'}',
-                                          style: TextStyle(fontSize: 14),
-                                        ),
-                                      ],
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          itinerary
-                                              .segments.last.arrival.iataCode,
-                                          style: TextStyle(
-                                              fontSize: 14, ),
-                                        ),
-                                        Text(
-                                          '${formatDate(itinerary.segments.first.arrival.at.toString())} ',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-                                        Text(
-                                          '${itinerary.segments.last.arrival.at.hour}:${itinerary.segments.last.arrival.at.minute.toString().padLeft(2, '0')}',
-                                          style: TextStyle(
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.bold),
-                                        ),
-
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 18),
-                              ],
-                            );
-                          }).toList(),
-                        ],
+                      Text(getAirlineName(flight.itineraries.first.segments.first
+                          .carrierCode)
+                        ,
+                        style: TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.normal),
                       ),
-                    ),
+                      // Add some spacing between text and logo
+
+                      Text(
+                        '${flight.price.total} ${flight.price.currency}',
+                        style: TextStyle(
+                            fontSize: 16, color: Colors.blue),
+                      ),
+                    ],
                   ),
-                ))
+                  SizedBox(height: 08),
+
+                  Divider(  // This adds the separator line
+                    height: 1,
+                    thickness: 4,
+                    color: Colors.grey[300],
+                  ),
+                  SizedBox(height: 12),
+                  ...flight.itineraries.map((itinerary) {
+                    return Column(
+                      children: [
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  itinerary.segments.first.departure
+                                      .iataCode,
+                                  style: TextStyle(
+                                      fontSize: 14,fontWeight: FontWeight.normal),
+                                ),
+                                Text(
+                                  '${formatDate(itinerary.segments.first.departure.at.toString())} ',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  '${itinerary.segments.first.departure.at.hour}:${itinerary.segments.first.departure.at.minute.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Container(
+                                  height: 2,  // Thickness of the line
+                                  width: 80,  // Width of the line (customize as needed)
+                                  color: Colors.blue,
+                                ),
+                                SizedBox(height: 8),  // Optional spacing
+                                Text(
+                                  '${formatDuration(itinerary.duration)}',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                                Text(
+                                  '${itinerary.segments.length - 1} ${itinerary.segments.length == 1 ? 'Stop' : 'Stops'}',
+                                  style: TextStyle(fontSize: 14),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              crossAxisAlignment:
+                              CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  itinerary
+                                      .segments.last.arrival.iataCode,
+                                  style: TextStyle(
+                                    fontSize: 14, ),
+                                ),
+                                Text(
+                                  '${formatDate(itinerary.segments.first.arrival.at.toString())} ',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+                                Text(
+                                  '${itinerary.segments.last.arrival.at.hour}:${itinerary.segments.last.arrival.at.minute.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold),
+                                ),
+
+                              ],
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 18),
+                      ],
+                    );
+                  }).toList(),
+                ],
+              ),
+            ),
+          ),
+        ))
             .toList(),
       ],
     );

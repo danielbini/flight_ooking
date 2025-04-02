@@ -157,19 +157,19 @@ class _FlightDetailPageState extends State<FlightDetailPage> {
                             CrossAxisAlignment.start,
                             children: [
                               Text(
-                                itinerary.segments.first.departure
+                                segment.departure
                                     .iataCode,
                                 style: TextStyle(
                                     fontSize: 14,fontWeight: FontWeight.normal),
                               ),
                               Text(
-                                '${formatDate(itinerary.segments.first.departure.at.toString())} ',
+                                '${formatDate(segment.departure.at.toString())} ',
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '${itinerary.segments.first.departure.at.hour}:${itinerary.segments.first.departure.at.minute.toString().padLeft(2, '0')}',
+                                '${segment.departure.at.hour}:${segment.departure.at.minute.toString().padLeft(2, '0')}',
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold),
@@ -187,15 +187,15 @@ class _FlightDetailPageState extends State<FlightDetailPage> {
                               ),
                               SizedBox(height: 8),
                               Text(
-                                '${formatDuration(itinerary.duration)}',
+                                '${formatDuration(segment.duration)}',
                                 style: TextStyle(
                                     fontSize: 14),
                               ),
-                              Text(
-                                '${itinerary.segments.length - 1} ${itinerary.segments.length == 1 ? 'Stop' : 'Stops'}',
-                                style: TextStyle(
-                                    fontSize: 14),
-                              ),
+                              // Text(
+                              //   '${itinerary.segments.length - 1} ${itinerary.segments.length == 1 ? 'Stop' : 'Stops'}',
+                              //   style: TextStyle(
+                              //       fontSize: 14),
+                              // ),
 
                             ],
                           ),
@@ -204,19 +204,18 @@ class _FlightDetailPageState extends State<FlightDetailPage> {
                             CrossAxisAlignment.end,
                             children: [
                               Text(
-                                itinerary
-                                    .segments.last.arrival.iataCode,
+                                segment.arrival.iataCode,
                                 style: TextStyle(
                                   fontSize: 14, ),
                               ),
                               Text(
-                                '${formatDate(itinerary.segments.first.arrival.at.toString())} ',
+                                '${formatDate(segment.arrival.at.toString())} ',
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold),
                               ),
                               Text(
-                                '${itinerary.segments.last.arrival.at.hour}:${itinerary.segments.last.arrival.at.minute.toString().padLeft(2, '0')}',
+                                '${segment.arrival.at.hour}:${segment.arrival.at.minute.toString().padLeft(2, '0')}',
                                 style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold),
@@ -470,10 +469,10 @@ class _FlightDetailPageState extends State<FlightDetailPage> {
               children: [
                 Spacer(),
                 Text(
-                  'Total Price: \$${widget.flight.price.total}',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  'Total Price: ${widget.flight.price.currency} ${ widget.flight.price.total}',
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
-                SizedBox(width: 40),
+                SizedBox(width: 30),
                 ElevatedButton(
                   onPressed: isLoading ? null :() async =>await selectFlight(widget.flight),
                   child: Text('Proceed to Book'),

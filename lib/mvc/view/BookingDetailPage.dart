@@ -126,7 +126,7 @@ class _BookingDetailPageState extends State<BookingDetailPage> {
                                 ),
                                 SizedBox(height: 8),
                                 Text(
-                                  '${formatDuration(itinerary.segments!.first!.duration!)}',
+                                  '${formatDuration(itinerary.segments!.first.duration!)}',
                                   style: TextStyle(
                                       fontSize: 14),
                                 ),
@@ -195,11 +195,11 @@ class _BookingDetailPageState extends State<BookingDetailPage> {
                         Column(
                           children: [
                             Text(
-                              "${widget.flightOffers!.first.itineraries!.first.segments!.first.departure!.at.hour} :${widget.flightOffers!.first.itineraries!.first!.segments!.first.departure!.at.minute.toString().padLeft(2,'0')}",
+                              "${widget.flightOffers!.first.itineraries!.first.segments!.first.departure!.at.hour} :${widget.flightOffers!.first.itineraries!.first.segments!.first.departure!.at.minute.toString().padLeft(2,'0')}",
                               style: TextStyle(fontSize: 14, color: Colors.black),
                             ),
                             Text(
-                              "${formatCardDate(widget.flightOffers!.first.itineraries!.first!.segments!.first.departure!.at.toString())}",
+                              "${formatCardDate(widget.flightOffers!.first.itineraries!.first.segments!.first.departure!.at.toString())}",
                               style: TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                             SizedBox(height: 10),
@@ -210,7 +210,7 @@ class _BookingDetailPageState extends State<BookingDetailPage> {
                             ),
                             SizedBox(height: 10),
                             Text(
-                              "${formatDuration(widget.flightOffers!.first.itineraries!.first!.segments!.first.duration!)}",
+                              "${formatDuration(widget.flightOffers!.first.itineraries!.first.segments!.first.duration!)}",
                               style: TextStyle(fontSize: 14, color: Colors.black),
                             ),
                             SizedBox(height: 10),
@@ -221,12 +221,12 @@ class _BookingDetailPageState extends State<BookingDetailPage> {
                             ),
                             SizedBox(height: 05),
                             Text(
-                              "${widget.flightOffers!.first.itineraries!.first!.segments!.first.arrival!.at.hour} :${widget.flightOffers!.first.itineraries!.first!.segments!.first.arrival!.at.minute.toString().padLeft(2,'0')}",
+                              "${widget.flightOffers!.first.itineraries!.first.segments!.first.arrival!.at.hour} :${widget.flightOffers!.first.itineraries!.first.segments!.first.arrival!.at.minute.toString().padLeft(2,'0')}",
                               style: TextStyle(fontSize: 14, color: Colors.black),
                             ),
                             SizedBox(height: 2),
                             Text(
-                              "${formatCardDate(widget.flightOffers!.first.itineraries!.first!.segments!.first.arrival!.at.toString())}",
+                              "${formatCardDate(widget.flightOffers!.first.itineraries!.first.segments!.first.arrival!.at.toString())}",
                               style: TextStyle(fontSize: 12, color: Colors.grey),
                             ),
                           ],
@@ -455,33 +455,7 @@ class _BookingDetailPageState extends State<BookingDetailPage> {
         ));
   }
 
-  Widget _buildDetailRow(String label, String value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 14,
-              color: Colors.grey[600],
-            ),
-          ),
-          SizedBox(height: 14),
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          SizedBox(height: 15,),
-          Divider(),
-        ],
-      ),
-    );
-  }
+
 
   String formatDuration(String duration) {
     final regex = RegExp(r'PT(\d+H)?(\d+M)?');
